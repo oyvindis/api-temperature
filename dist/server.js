@@ -14,5 +14,5 @@ var server = app.listen(process.env.PORT || 5555, function () {
 
 //Enkel rute på rot som sender en bekreftende beskjed på responsen
 app.get('/', function (req, res) {
-  res.send('API svarer!')
+  res.send('API svarer hipp hurra!')
 });
