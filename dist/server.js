@@ -1,6 +1,19 @@
 var express = require('express');
 var schedule = require('node-schedule');
 var firebase = require('firebase');
+var admin = require("firebase-admin");
+var CurrentLocationForecast = require('yr-lib').CurrentLocationForecast;
+
+var serviceAccount = require("../serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://api-temperature.firebaseio.com/"
+});
+
+// Use the shorthand notation to retrieve the default app's services
+var defaultAuth = admin.auth();
+var defaultDatabase = admin.database();
 
 var baseUrl = 'https://api-temperature.firebaseio.com/';
 
@@ -22,26 +35,36 @@ app.get('/', function (req, res) {
   res.send('API svarer hipp hurra!')
 });
 
+// CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
+//   console.log(data[0].from);
+//   console.log(data[0].location.temperature.value);
+//   console.log(data[0].location.dewpointTemperature.value);
+//   //_writeTemperatureNode("yr", "Oppsal", data[0].location.temperature.value);
+// });
+
+
 var j = schedule.scheduleJob('*/1 * * * *', function(){
-  _writeTemperatureNode("Oslo", "2").then(function (response) {
-    var result = 'New temperatureposting created with key: ' + response.key();
-    res.status(200).send(result)
-  }, function (error) {
-    res.status(404).send(error.message)
+  console.log("scheduler");
+  CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
+    var currentData = data[0];
+    _writeTemperatureNode("yr", currentData.from, "Oppsal", currentData.location.temperature.value, currentData.location.dewpointTemperature.value);
   });
 });
+
 
 //asynkron funksjon som skriver en ny temperaturepostings node til Firebase og returnerer ID'en til denne
 //hvis .push() - metoden til Firebase returnerer noe annet enn null betyr det
 //at operasjonen feilet, og vi sender feilen tilbake, ellers returnerer vi med den nye node ID'en
-function _writeTemperatureNode(location, temperature) {
+function _writeTemperatureNode(source, localTime, location, temperature, dewpointTemperature) {
   return new Promise(function (resolve, reject) {
-    var nodeRef = new Firebase(baseUrl + '/temperatureposting/');
-    var newNodeRef = nodeRef.push({
+    var newNodeRef = defaultDatabase.ref('/'+source).set({
       "location": location,
-      "temperature": temperature
+      "time": localTime,
+      "temperature": temperature,
+      "dewpointTemperature": dewpointTemperature
     }, function (firebaseResponse) {
       if (null !== firebaseResponse) {
+        console.log("error");
         reject(new Error('Something wen\'t wrong, please try again!'));
       }
       resolve(newNodeRef);
