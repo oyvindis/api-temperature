@@ -35,7 +35,7 @@ app.get('/', function (req, res) {
   res.send('API svarer')
 });
 
-var j = schedule.scheduleJob('*/1 * * * *', function(){
+var j = schedule.scheduleJob('*/30 * * * *', function(){
   console.log("scheduler");
   CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
     var currentData = data[0];
