@@ -35,6 +35,14 @@ app.get('/', function (req, res) {
   res.send('API svarer')
 });
 
+app.get('/yr', function (req, res) {
+  _getTextNode("yr").then(function (response) {
+    res.status(200).send(response)
+  }, function (error) {
+    res.status(404).send(error.message)
+  });
+});
+
 var j = schedule.scheduleJob('*/30 * * * *', function(){
   console.log("scheduler");
   CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
@@ -58,6 +66,20 @@ function _writeTemperatureNode(source, localTime, location, temperature, dewpoin
         reject(new Error('Something wen\'t wrong, please try again!'));
       }
       resolve(newNodeRef);
+    });
+  });
+}
+
+//asynkron funksjon som leser fra strings noden i Firebase og returnerer noden som matcher id
+function _getTextNode(source) {
+  return new Promise(function (resolve, reject) {
+    var nodeRef = defaultDatabase.ref('/'+source).once('value', function (snapshot) {
+      var ret = snapshot.val();
+      if (null !== ret) {
+        resolve(ret);
+      } else {
+        reject(new Error('node not found by source: ' + source));
+      }
     });
   });
 }
