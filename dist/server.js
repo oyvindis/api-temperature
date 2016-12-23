@@ -32,16 +32,8 @@ var server = app.listen(process.env.PORT || 5555, function () {
 
 //Enkel rute på rot som sender en bekreftende beskjed på responsen
 app.get('/', function (req, res) {
-  res.send('API svarer hipp hurra!')
+  res.send('API svarer')
 });
-
-// CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
-//   console.log(data[0].from);
-//   console.log(data[0].location.temperature.value);
-//   console.log(data[0].location.dewpointTemperature.value);
-//   //_writeTemperatureNode("yr", "Oppsal", data[0].location.temperature.value);
-// });
-
 
 var j = schedule.scheduleJob('*/1 * * * *', function(){
   console.log("scheduler");
@@ -53,8 +45,6 @@ var j = schedule.scheduleJob('*/1 * * * *', function(){
 
 
 //asynkron funksjon som skriver en ny temperaturepostings node til Firebase og returnerer ID'en til denne
-//hvis .push() - metoden til Firebase returnerer noe annet enn null betyr det
-//at operasjonen feilet, og vi sender feilen tilbake, ellers returnerer vi med den nye node ID'en
 function _writeTemperatureNode(source, localTime, location, temperature, dewpointTemperature) {
   return new Promise(function (resolve, reject) {
     var newNodeRef = defaultDatabase.ref('/'+source).set({
