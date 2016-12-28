@@ -45,10 +45,11 @@ app.get('/yr', function (req, res) {
 
 app.get('/yr/:location', function (req, res) {
   if(req.params.location) {
+    var currentData = 'ingenting';
     CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
-      var currentData = data[0];
-      res.status(200).send(currentData.temperature.value);
+      currentData = data[0].temperature.value;
     });
+    res.status(200).send(currentData);
   }
 });
 
