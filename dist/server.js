@@ -43,14 +43,14 @@ app.get('/yr', function (req, res) {
   });
 });
 
-app.get('/yr/:location', function (req, res) {
-  if(req.params.location) {
+app.get('/yr/location', function (req, res) {
+
     var currentData = 'ingenting';
     CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
-      currentData = data[0].temperature.value;
+      currentData = data[0].from;
     });
     res.status(200).send(currentData);
-  }
+
 });
 
 var j = schedule.scheduleJob('*/30 * * * *', function(){
