@@ -47,10 +47,7 @@ app.get('/yr/:location', function (req, res) {
   if(req.params.location) {
     CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
       var currentData = data[0];
-      var forecast = [{
-        "temperature": currentData.temperature.value
-      }];
-      res.status(200).send(forecast);
+      res.status(200).send(currentData.temperature.value);
     });
   }
 });
