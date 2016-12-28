@@ -43,23 +43,31 @@ app.get('/yr', function (req, res) {
   });
 });
 
-app.get('/yr/location', function (req, res) {
-
-    var currentData = 'ingenting';
+app.get('/yr/:location', function (req, res) {
+  if(req.params.location) {
     CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
-      currentData = data[0].from;
+      var currentData = data[0];
+      //res.writeHead(200, {"Content-Type": "application/json"});
+      var json = JSON.stringify({
+        temperature: currentData.location.temperature.value,
+        dewpointTemperature: currentData.location.dewpointTemperature.value,
+        location: req.params.location,
+        time: currentData.from
+      });
+      //res.status(200).send(currentData.location.temperature.value);
+      res.status(200).send(json);
     });
-    res.status(200).send(currentData);
-
+  }
 });
 
-var j = schedule.scheduleJob('*/30 * * * *', function(){
-  console.log("scheduler");
-  CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
-    var currentData = data[0];
-    _writeTemperatureNode("yr", currentData.from, "Oppsal", currentData.location.temperature.value, currentData.location.dewpointTemperature.value);
-  });
-});
+
+// var j = schedule.scheduleJob('*/30 * * * *', function(){
+//   console.log("scheduler");
+//   CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
+//     var currentData = data[0];
+//     _writeTemperatureNode("yr", currentData.from, "Oppsal", currentData.location.temperature.value, currentData.location.dewpointTemperature.value);
+//   });
+// });
 
 
 //asynkron funksjon som skriver en ny temperaturepostings node til Firebase og returnerer ID'en til denne
