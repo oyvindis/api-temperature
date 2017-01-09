@@ -118,7 +118,7 @@ app.get('/place/:placeid', function (req, res) {
 
     var result = '{"results":[';
 
-    result += '{"lat":' + response.result.geometry.location.lat + '",'
+    result += '{"lat":"' + response.result.geometry.location.lat + '",'
       + '"lng":"' + response.result.geometry.location.lng + '"}';
 
     result +=']}';
