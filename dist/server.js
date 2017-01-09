@@ -79,7 +79,7 @@ app.get('/places/autocomplete', function (req, res) {
     */
 
     //var result = "[{'title': 'Oslo'}]";
-    var result = '[';
+    var result = '';//'[';
 
 
     for(var index in response.predictions) {
@@ -88,7 +88,7 @@ app.get('/places/autocomplete', function (req, res) {
       result += "{'title':" + response.predictions[index].description + ","
         + "'place_id':" + response.predictions[index].place_id + "}";
     }
-    result +=']';
+    //result +=']';
 
     res.status(200).send(result);
 
