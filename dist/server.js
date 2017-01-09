@@ -67,7 +67,7 @@ app.get('/places/autocomplete/:query', function (req, res) {
 
   console.log("test");
 
-  locations.autocomplete({input: req.params.query, types: "(cities)", language: "nb", country: 'no'}, function(err, response) {
+  locations.autocomplete({input: req.params.query, types: "(cities)", language: "nb", country: 'no', components: 'country:no'}, function(err, response) {
     console.log("autocomplete: ", response.predictions);
     //console.log("autocomplete2: ", response.predictions[0].description);
     //console.log("did you mean: ", response.result);
