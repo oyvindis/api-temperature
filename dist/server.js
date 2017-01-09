@@ -115,7 +115,18 @@ app.get('/place/:placeid', function (req, res) {
   locations.details({placeid: req.params.placeid}, function(err, response) {
     console.log("search details: ", response.result.geometry.location.lat + " " + response.result.geometry.location.lng);
     // search details: Google
+
+    var result = '{"results":[';
+
+    result += '{"lat":' + response.result.geometry.location.lat + '",'
+      + '"lng":"' + response.result.geometry.location.lng + '"}';
+
+    result +=']}';
+
+    res.status(200).send(result);
+
   });
+
 });
 
 
