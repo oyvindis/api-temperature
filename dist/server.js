@@ -3,6 +3,7 @@ var schedule = require('node-schedule');
 var firebase = require('firebase');
 var admin = require("firebase-admin");
 var CurrentLocationForecast = require('yr-lib').CurrentLocationForecast;
+var GoogleLocations = require('google-locations');
 
 var serviceAccount = require("../serviceAccountKey.json");
 
@@ -20,6 +21,8 @@ var baseUrl = 'https://api-temperature.firebaseio.com/';
 var app = express();
 var isProduction = process.env.NODE_ENV === 'production';
 var port = isProduction ? process.env.PORT : 3000;
+
+var locations = new GoogleLocations('AIzaSyC8GogpxKovkVzqXV7rS__iH2DWf7lXWZw');
 
 app.use(express.static(__dirname));
 
@@ -58,6 +61,57 @@ app.get('/yr/:location', function (req, res) {
       res.status(200).send(json);
     });
   }
+});
+
+app.get('/places/autocomplete', function (req, res) {
+
+  console.log("test");
+
+  locations.autocomplete({input: 'Tro', types: "(cities)", language: "nb", country: 'no'}, function(err, response) {
+    console.log("autocomplete: ", response.predictions);
+    //console.log("autocomplete2: ", response.predictions[0].description);
+    //console.log("did you mean: ", response.result);
+
+    /*
+    var success = function(err, response) {
+      console.log("did you mean: ", response.result.name);
+    };
+    */
+
+    //var result = "[{'title': 'Oslo'}]";
+    var result = '[';
+
+
+    for(var index in response.predictions) {
+      //locations.details({placeid: response.predictions[index].place_id}, success);
+      //result += "{'title': 'Oslo'}"
+      result += "{'title':" + response.predictions[index].description + ","
+        + "'place_id':" + response.predictions[index].place_id + "}";
+    }
+    result +=']';
+
+    res.status(200).send(result);
+
+
+
+
+
+    /*
+    for(var index in response.predictions) {
+      locations.details({placeid: response.predictions[index].place_id}, success);
+    }
+    */
+  });
+
+
+
+});
+
+app.get('/place/:placeid', function (req, res) {
+  locations.details({placeid: req.params.placeid}, function(err, response) {
+    console.log("search details: ", response.result.geometry.location.lat + " " + response.result.geometry.location.lng);
+    // search details: Google
+  });
 });
 
 

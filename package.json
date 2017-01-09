@@ -13,6 +13,8 @@
     "express": "^4.14.0",
     "firebase": "^3.6.4",
     "firebase-admin": "^4.0.4",
+    "google-locations": "^0.2.0",
+    "node-geolocation": "^1.15.14",
     "node-schedule": "^1.2.0",
     "yr-lib": "^1.0.16"
   }
