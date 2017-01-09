@@ -79,16 +79,20 @@ app.get('/places/autocomplete', function (req, res) {
     */
 
     //var result = "[{'title': 'Oslo'}]";
-    var result = '';//'[';
+    var result = '{"places":[';
 
 
     for(var index in response.predictions) {
       //locations.details({placeid: response.predictions[index].place_id}, success);
       //result += "{'title': 'Oslo'}"
-      result += "{'title':" + response.predictions[index].description + ","
-        + "'place_id':" + response.predictions[index].place_id + "}";
+      if (index != 0) {
+        result += ",";
+      }
+      result += '{"title":"' + response.predictions[index].description + '",'
+        + '"place_id":"' + response.predictions[index].place_id + '"}';
+
     }
-    //result +=']';
+    result +=']}';
 
     res.status(200).send(result);
 
