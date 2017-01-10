@@ -46,9 +46,10 @@ app.get('/yr', function (req, res) {
   });
 });
 
-app.get('/yr/:location', function (req, res) {
-  if(req.params.location) {
-    CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
+app.get('/yr/:lat/:lng', function (req, res) {
+  if(req.params.lat) {
+    //CurrentLocationForecast("59.896339", "10.847261", new Date(), function(data) {
+    CurrentLocationForecast(req.params.lat, req.params.lng, new Date(), function(data) {
       var currentData = data[0];
       //res.writeHead(200, {"Content-Type": "application/json"});
       var json = JSON.stringify({
@@ -113,12 +114,15 @@ app.get('/places/autocomplete/:query', function (req, res) {
 
 app.get('/place/:placeid', function (req, res) {
   locations.details({placeid: req.params.placeid}, function(err, response) {
-    console.log("search details: ", response.result.geometry.location.lat + " " + response.result.geometry.location.lng);
+    //console.log("search details: ", response.result.geometry.location.lat + " " + response.result.geometry.location.lng);
+    console.log(response.result);
     // search details: Google
 
     var result = '{"results":[';
 
-    result += '{"lat":"' + response.result.geometry.location.lat + '",'
+    result += '{'
+      + '"name":' + response.result.name + '","'
+      + '"lat":"' + response.result.geometry.location.lat + '",'
       + '"lng":"' + response.result.geometry.location.lng + '"}';
 
     result +=']}';
