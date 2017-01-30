@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-preset-es2015": "^6.22.0",
     "express": "^4.14.0",
     "firebase": "^3.6.4",
     "firebase-admin": "^4.0.4",
@@ -17,5 +18,8 @@
     "node-geolocation": "^1.15.14",
     "node-schedule": "^1.2.0",
     "yr-lib": "^1.0.16"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.22.2"
   }
 }

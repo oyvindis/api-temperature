@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var schedule = require('node-schedule');
 var firebase = require('firebase');
@@ -5,9 +7,9 @@ var admin = require("firebase-admin");
 var CurrentLocationForecast = require('yr-lib').CurrentLocationForecast;
 var GoogleLocations = require('google-locations');
 
-const serviceAccount = require("../serviceAccountKey.json");
+var serviceAccount = require("../serviceAccountKey.json");
 
-const myFirebase = require('./firebase/firebase');
+var myFirebase = require('./firebase/firebase');
 
 var app = express();
 var isProduction = process.env.NODE_ENV === 'production';
@@ -26,7 +28,7 @@ var server = app.listen(process.env.PORT || 5555, function () {
 
 //Enkel rute på rot som sender en bekreftende beskjed på responsen
 app.get('/', function (req, res) {
-  res.send('API svarer')
+  res.send('API svarer');
 });
 
 /*
@@ -71,25 +73,20 @@ app.get('/places/autocomplete/:query', function (req, res) {
       if (index != 0) {
         result += ",";
       }
-      result += '{"title":"' + response.predictions[index].description + '",'
-        + '"place_id":"' + response.predictions[index].place_id + '"}';
+      result += '{"title":"' + response.predictions[index].description + '",' + '"place_id":"' + response.predictions[index].place_id + '"}';
     }
     result += ']}';
     res.status(200).send(result);
   });
-
 });
 
 app.get('/place/:placeid', function (req, res) {
-  locations.details({placeid: req.params.placeid}, function (err, response) {
+  locations.details({ placeid: req.params.placeid }, function (err, response) {
     console.log(response.result);
 
     // search details: Google
     var result = '{"results":[';
-    result += '{'
-      + '"name":"' + response.result.name + '",'
-      + '"lat":"' + response.result.geometry.location.lat + '",'
-      + '"lng":"' + response.result.geometry.location.lng + '"}';
+    result += '{' + '"name":"' + response.result.name + '",' + '"lat":"' + response.result.geometry.location.lat + '",' + '"lng":"' + response.result.geometry.location.lng + '"}';
     result += ']}';
     res.status(200).send(result);
   });
@@ -97,13 +94,14 @@ app.get('/place/:placeid', function (req, res) {
 
 app.get('/verify/:mytokenId', function (req, res) {
   // idToken comes from the client app (shown above)
-  admin.auth().verifyIdToken(req.params.mytokenId)
-    .then(function (decodedToken) {
-      var uid = decodedToken.uid;
-      console.log("tokenId: " + req.params.mytokenId + ': ' + uid);
-      res.status(200).send(uid);
-    }).catch(function (error) {
+  admin.auth().verifyIdToken(req.params.mytokenId).then(function (decodedToken) {
+    var uid = decodedToken.uid;
+    console.log("tokenId: " + req.params.mytokenId + ': ' + uid);
+    res.status(200).send(uid);
+  }).catch(function (error) {
     console.log("error");
     res.status(200).send("error");
   });
 });
+
+//# sourceMappingURL=server-compiled.js.map
